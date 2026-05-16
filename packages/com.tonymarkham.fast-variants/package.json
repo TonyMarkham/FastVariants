@@ -1,0 +1,14 @@
+{
+  "name": "com.tonymarkham.fast-variants",
+  "version": "0.1.0",
+  "displayName": "FastVariants",
+  "description": "A Fast Configuration System",
+  "unity": "6000.4",
+  "keywords": [],
+  "author": {
+    "name": "Tony Markham",
+    "url": "https://github.com/TonyMarkham/FastVariants"
+  },
+  "dependencies": {
+  }
+}

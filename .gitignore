@@ -1,0 +1,12 @@
+# Ignore everything by default
+*
+
+# IDE
+.idea/
+
+# Repo allowlist
+!packages/*
+!projects/*
+!rust/*
+!LICENSE
+!.gitignore

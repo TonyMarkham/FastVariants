@@ -1,0 +1,25 @@
+# C#
+*.csproj
+*.sln
+
+# Unity
+Logs/*
+!Logs/.gitignore
+
+obj/*
+!obj/.gitignore
+
+ProjectSettings/*
+!ProjectSettings/.gitignore
+
+Temp/*
+!Temp/.gitignore
+
+UserSettings/*
+!UserSettings/.gitignore
+
+Packages/*
+!Packages/.gitignore
+
+Library/*
+!Library/.gitignore
