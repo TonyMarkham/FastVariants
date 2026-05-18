@@ -5,8 +5,27 @@
 .idea/
 
 # Repo allowlist
+!packages/
 !packages/*
+!projects/
 !projects/*
+!rust/
 !rust/*
 !LICENSE
 !.gitignore
+
+# FastVariants package source
+!packages/com.tonymarkham.fast-variants/**
+!packages/com.tonymarkham.container-models/**
+
+# Rust prototype source and shared protobuf schema
+!rust/Cargo.toml
+!rust/Cargo.lock
+!rust/crates/
+!rust/crates/wip/
+!rust/crates/wip/Cargo.toml
+!rust/crates/wip/build.rs
+!rust/crates/wip/src/
+!rust/crates/wip/src/**
+!rust/proto/
+!rust/proto/**

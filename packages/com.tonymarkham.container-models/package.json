@@ -1,0 +1,11 @@
+{
+  "name": "com.tonymarkham.container-models",
+  "version": "0.1.0",
+  "displayName": "Comtainer Models",
+  "description": "Four Container Models",
+  "unity": "6000.4",
+  "keywords": [],
+  "author": {
+    "name": "Tony Markham"
+  }
+}

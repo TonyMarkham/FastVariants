@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement class="fv-variant-editor">
+        <ui:VisualElement class="fv-header">
+            <ui:Label text="GameObject Visibility Variant Set" class="fv-title" />
+            <ui:Label text="Group embedded visibility variants and generate the variant-set payload." class="fv-subtitle" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="fv-section">
+            <ui:Label text="Identity" class="fv-section-title" />
+            <uie:PropertyField binding-path="m_ItemName" label="Name" />
+            <uie:PropertyField binding-path="m_ItemCode" label="Code" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="fv-section">
+            <ui:Label text="Variants" class="fv-section-title" />
+            <ui:Button name="add-variant-button" text="Add Embedded Variant" class="fv-primary-button" />
+            <uie:PropertyField binding-path="m_Variants" label="Variants" />
+            <ui:Label text="Embedded variants are stored as sub-assets of this variant set asset." class="fv-note" />
+        </ui:VisualElement>
+
+        <ui:Foldout text="Generated Data" value="false" class="fv-section fv-foldout">
+            <uie:PropertyField name="variant-set" binding-path="m_VariantSet" label="Variant Set" class="fv-generated-field" />
+            <uie:PropertyField name="protobuf" binding-path="m_Protobuf" label="Protobuf" class="fv-generated-field" />
+        </ui:Foldout>
+    </ui:VisualElement>
+</ui:UXML>

@@ -3,23 +3,26 @@
 *.sln
 
 # Unity
-Logs/*
+Logs/
 !Logs/.gitignore
 
-obj/*
+obj/
 !obj/.gitignore
 
-ProjectSettings/*
+ProjectSettings/
 !ProjectSettings/.gitignore
 
-Temp/*
+Temp/
 !Temp/.gitignore
 
-UserSettings/*
+UserSettings/
 !UserSettings/.gitignore
 
-Packages/*
+Packages/
 !Packages/.gitignore
 
-Library/*
+Library/
 !Library/.gitignore
+
+!Assets/
+!Assets/*

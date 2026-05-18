@@ -1,0 +1,112 @@
+.fv-variant-editor {
+    padding-top: 6px;
+    padding-right: 2px;
+    padding-bottom: 8px;
+    padding-left: 2px;
+}
+
+.fv-header {
+    margin-bottom: 8px;
+    padding-top: 10px;
+    padding-right: 12px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    border-left-width: 3px;
+    border-left-color: rgb(80, 160, 255);
+    background-color: rgba(80, 160, 255, 0.12);
+}
+
+.fv-title {
+    font-size: 15px;
+    -unity-font-style: bold;
+    margin-bottom: 2px;
+}
+
+.fv-subtitle,
+.fv-note {
+    color: rgb(166, 176, 190);
+    white-space: normal;
+}
+
+.fv-section {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+    padding-right: 10px;
+    padding-bottom: 8px;
+    padding-left: 10px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(255, 255, 255, 0.08);
+    border-right-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.fv-section-title {
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.fv-note {
+    margin-top: 4px;
+    font-size: 11px;
+}
+
+.fv-drop-zone {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    padding-top: 14px;
+    padding-right: 12px;
+    padding-bottom: 14px;
+    padding-left: 12px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(80, 160, 255, 0.35);
+    border-right-color: rgba(80, 160, 255, 0.35);
+    border-bottom-color: rgba(80, 160, 255, 0.35);
+    border-left-color: rgba(80, 160, 255, 0.35);
+    background-color: rgba(80, 160, 255, 0.07);
+}
+
+.fv-drop-zone--active {
+    border-top-color: rgb(80, 190, 255);
+    border-right-color: rgb(80, 190, 255);
+    border-bottom-color: rgb(80, 190, 255);
+    border-left-color: rgb(80, 190, 255);
+    background-color: rgba(80, 160, 255, 0.16);
+}
+
+.fv-drop-zone--rejected {
+    border-top-color: rgb(220, 90, 80);
+    border-right-color: rgb(220, 90, 80);
+    border-bottom-color: rgb(220, 90, 80);
+    border-left-color: rgb(220, 90, 80);
+    background-color: rgba(220, 90, 80, 0.12);
+}
+
+.fv-drop-zone-title {
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.fv-drop-zone-status {
+    margin-top: 3px;
+    color: rgb(166, 176, 190);
+    font-size: 11px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+}
+
+.fv-foldout {
+    padding-top: 4px;
+}
+
+.fv-generated-field {
+    opacity: 0.85;
+}

@@ -1,12 +1,16 @@
 {
   "dependencies": {
+    "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
+    "com.tonymarkham.container-models": "file:../../../packages/com.tonymarkham.container-models",
     "com.tonymarkham.fast-variants": "file:../../../packages/com.tonymarkham.fast-variants",
+    "com.tonymarkham.unity-utils": "file:../../../submodules/unity-utils/package",
     "com.unity.ai.navigation": "2.0.12",
     "com.unity.collab-proxy": "2.12.4",
     "com.unity.ide.rider": "3.0.40",
     "com.unity.ide.visualstudio": "2.0.27",
     "com.unity.inputsystem": "1.19.0",
     "com.unity.multiplayer.center": "1.0.1",
+    "com.unity.nuget.newtonsoft-json": "3.2.2",
     "com.unity.render-pipelines.universal": "17.4.0",
     "com.unity.test-framework": "1.6.0",
     "com.unity.timeline": "1.8.12",

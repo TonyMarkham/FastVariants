@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement class="fv-variant-editor">
+        <ui:VisualElement class="fv-header">
+            <ui:Label text="Configuration Manager" class="fv-title" />
+            <ui:Label text="Collect feature sets and create embedded configuration assets." class="fv-subtitle" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="fv-section">
+            <ui:Label text="Configuration" class="fv-section-title" />
+            <uie:PropertyField binding-path="m_ItemName" label="Name" />
+            <uie:PropertyField binding-path="m_Product" label="Product" />
+            <ui:Label text="The product GameObject is the root object this configuration describes." class="fv-note" />
+        </ui:VisualElement>
+
+        <ui:VisualElement class="fv-section">
+            <ui:Label text="Feature Sets" class="fv-section-title" />
+            <ui:Button name="add-visibility-variant-set-button" text="Add GameObject Visibility Variant Set" class="fv-primary-button" />
+            <uie:PropertyField binding-path="m_FeatureSets" label="Feature Sets" />
+            <ui:Label text="Feature sets are stored as sub-assets of this configuration manager asset." class="fv-note" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package fast_variants;
+
+option csharp_namespace = "FastVariants.Proto";
+
+message Variant {
+  string id = 1;
+  string name = 2;
+  string type_tag = 3;
+  string code = 4;
+  string feature_set_id = 5;
+  bool enabled = 10;
+}
+
+enum VisibilityTargetKind {
+  VISIBILITY_TARGET_KIND_UNSPECIFIED = 0;
+  VISIBILITY_TARGET_KIND_ENTITY = 1;
+  VISIBILITY_TARGET_KIND_RENDERER = 2;
+}
+
+message VisibilityVariant {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  string target_id = 4;
+  VisibilityTargetKind target_kind = 5;
+}
+
+message VisibilityVariantSet {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  repeated VisibilityVariant variants = 10;
+  string active_variant_id = 11;
+}
