@@ -54,8 +54,12 @@ namespace FastVariants.GameObjectVisibilityVariant
                 if (feature is not FastVariants.GameObjectVisibilityVariant.GameObjectVisibilityVariant variant
                     || variant.value == null)
                     continue;
-                
-                variant.value.SetActive(variant.id == activeVariant.id);
+
+                foreach (var gameObject in variant.value)
+                {
+                    if (gameObject != null)
+                        gameObject.SetActive(variant.id == activeVariant.id);
+                }
             }
             
             return true;

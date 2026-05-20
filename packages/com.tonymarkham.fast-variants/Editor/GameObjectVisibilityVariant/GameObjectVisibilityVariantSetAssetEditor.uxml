@@ -15,6 +15,7 @@
             <ui:Label text="Variants" class="fv-section-title" />
             <ui:Button name="add-variant-button" text="Add Embedded Variant" class="fv-primary-button" />
             <uie:PropertyField binding-path="m_Variants" label="Variants" />
+            <uie:PropertyField name="default-variant" binding-path="m_DefaultVariant" label="Default Variant" />
             <ui:Label text="Embedded variants are stored as sub-assets of this variant set asset." class="fv-note" />
         </ui:VisualElement>
 

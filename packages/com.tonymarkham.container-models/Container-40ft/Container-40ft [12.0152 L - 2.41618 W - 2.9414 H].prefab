@@ -222,7 +222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6060455308245944664}
   m_Layer: 0
-  m_Name: Container-40ft
+  m_Name: 'Container-40ft [12.0152 L - 2.41618 W - 2.9414 H]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

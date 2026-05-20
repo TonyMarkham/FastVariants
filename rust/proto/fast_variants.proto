@@ -25,6 +25,7 @@ message VisibilityVariant {
   string code = 3;
   string target_id = 4;
   VisibilityTargetKind target_kind = 5;
+  repeated string target_ids = 6;
 }
 
 message VisibilityVariantSet {

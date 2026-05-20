@@ -100,7 +100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8733188620930932438}
   m_Layer: 0
-  m_Name: Container-20ft
+  m_Name: 'Container-20ft [6.3572 L - 2.41619 W - 2.9414 H]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

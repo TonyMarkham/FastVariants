@@ -27,22 +27,22 @@ namespace FastVariants.Proto {
             "ChNmYXN0X3ZhcmlhbnRzLnByb3RvEg1mYXN0X3ZhcmlhbnRzImwKB1Zhcmlh",
             "bnQSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIQCgh0eXBlX3RhZxgDIAEo",
             "CRIMCgRjb2RlGAQgASgJEhYKDmZlYXR1cmVfc2V0X2lkGAUgASgJEg8KB2Vu",
-            "YWJsZWQYCiABKAgiiAEKEVZpc2liaWxpdHlWYXJpYW50EgoKAmlkGAEgASgJ",
+            "YWJsZWQYCiABKAginAEKEVZpc2liaWxpdHlWYXJpYW50EgoKAmlkGAEgASgJ",
             "EgwKBG5hbWUYAiABKAkSDAoEY29kZRgDIAEoCRIRCgl0YXJnZXRfaWQYBCAB",
             "KAkSOAoLdGFyZ2V0X2tpbmQYBSABKA4yIy5mYXN0X3ZhcmlhbnRzLlZpc2li",
-            "aWxpdHlUYXJnZXRLaW5kIo0BChRWaXNpYmlsaXR5VmFyaWFudFNldBIKCgJp",
-            "ZBgBIAEoCRIMCgRuYW1lGAIgASgJEgwKBGNvZGUYAyABKAkSMgoIdmFyaWFu",
-            "dHMYCiADKAsyIC5mYXN0X3ZhcmlhbnRzLlZpc2liaWxpdHlWYXJpYW50EhkK",
-            "EWFjdGl2ZV92YXJpYW50X2lkGAsgASgJKoYBChRWaXNpYmlsaXR5VGFyZ2V0",
-            "S2luZBImCiJWSVNJQklMSVRZX1RBUkdFVF9LSU5EX1VOU1BFQ0lGSUVEEAAS",
-            "IQodVklTSUJJTElUWV9UQVJHRVRfS0lORF9FTlRJVFkQARIjCh9WSVNJQklM",
-            "SVRZX1RBUkdFVF9LSU5EX1JFTkRFUkVSEAJCFaoCEkZhc3RWYXJpYW50cy5Q",
-            "cm90b2IGcHJvdG8z"));
+            "aWxpdHlUYXJnZXRLaW5kEhIKCnRhcmdldF9pZHMYBiADKAkijQEKFFZpc2li",
+            "aWxpdHlWYXJpYW50U2V0EgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoE",
+            "Y29kZRgDIAEoCRIyCgh2YXJpYW50cxgKIAMoCzIgLmZhc3RfdmFyaWFudHMu",
+            "VmlzaWJpbGl0eVZhcmlhbnQSGQoRYWN0aXZlX3ZhcmlhbnRfaWQYCyABKAkq",
+            "hgEKFFZpc2liaWxpdHlUYXJnZXRLaW5kEiYKIlZJU0lCSUxJVFlfVEFSR0VU",
+            "X0tJTkRfVU5TUEVDSUZJRUQQABIhCh1WSVNJQklMSVRZX1RBUkdFVF9LSU5E",
+            "X0VOVElUWRABEiMKH1ZJU0lCSUxJVFlfVEFSR0VUX0tJTkRfUkVOREVSRVIQ",
+            "AkIVqgISRmFzdFZhcmlhbnRzLlByb3RvYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::FastVariants.Proto.VisibilityTargetKind), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::FastVariants.Proto.Variant), global::FastVariants.Proto.Variant.Parser, new[]{ "Id", "Name", "TypeTag", "Code", "FeatureSetId", "Enabled" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::FastVariants.Proto.VisibilityVariant), global::FastVariants.Proto.VisibilityVariant.Parser, new[]{ "Id", "Name", "Code", "TargetId", "TargetKind" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::FastVariants.Proto.VisibilityVariant), global::FastVariants.Proto.VisibilityVariant.Parser, new[]{ "Id", "Name", "Code", "TargetId", "TargetKind", "TargetIds" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::FastVariants.Proto.VisibilityVariantSet), global::FastVariants.Proto.VisibilityVariantSet.Parser, new[]{ "Id", "Name", "Code", "Variants", "ActiveVariantId" }, null, null, null, null)
           }));
     }
@@ -482,6 +482,7 @@ namespace FastVariants.Proto {
       code_ = other.code_;
       targetId_ = other.targetId_;
       targetKind_ = other.targetKind_;
+      targetIds_ = other.targetIds_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -551,6 +552,17 @@ namespace FastVariants.Proto {
       }
     }
 
+    /// <summary>Field number for the "target_ids" field.</summary>
+    public const int TargetIdsFieldNumber = 6;
+    private static readonly pb::FieldCodec<string> _repeated_targetIds_codec
+        = pb::FieldCodec.ForString(50);
+    private readonly pbc::RepeatedField<string> targetIds_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> TargetIds {
+      get { return targetIds_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -571,6 +583,7 @@ namespace FastVariants.Proto {
       if (Code != other.Code) return false;
       if (TargetId != other.TargetId) return false;
       if (TargetKind != other.TargetKind) return false;
+      if (!targetIds_.Equals(other.targetIds_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -583,6 +596,7 @@ namespace FastVariants.Proto {
       if (Code.Length != 0) hash ^= Code.GetHashCode();
       if (TargetId.Length != 0) hash ^= TargetId.GetHashCode();
       if (TargetKind != global::FastVariants.Proto.VisibilityTargetKind.Unspecified) hash ^= TargetKind.GetHashCode();
+      hash ^= targetIds_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -621,6 +635,7 @@ namespace FastVariants.Proto {
         output.WriteRawTag(40);
         output.WriteEnum((int) TargetKind);
       }
+      targetIds_.WriteTo(output, _repeated_targetIds_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -651,6 +666,7 @@ namespace FastVariants.Proto {
         output.WriteRawTag(40);
         output.WriteEnum((int) TargetKind);
       }
+      targetIds_.WriteTo(ref output, _repeated_targetIds_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -676,6 +692,7 @@ namespace FastVariants.Proto {
       if (TargetKind != global::FastVariants.Proto.VisibilityTargetKind.Unspecified) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TargetKind);
       }
+      size += targetIds_.CalculateSize(_repeated_targetIds_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -703,6 +720,7 @@ namespace FastVariants.Proto {
       if (other.TargetKind != global::FastVariants.Proto.VisibilityTargetKind.Unspecified) {
         TargetKind = other.TargetKind;
       }
+      targetIds_.Add(other.targetIds_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -742,6 +760,10 @@ namespace FastVariants.Proto {
             TargetKind = (global::FastVariants.Proto.VisibilityTargetKind) input.ReadEnum();
             break;
           }
+          case 50: {
+            targetIds_.AddEntriesFrom(input, _repeated_targetIds_codec);
+            break;
+          }
         }
       }
     #endif
@@ -779,6 +801,10 @@ namespace FastVariants.Proto {
           }
           case 40: {
             TargetKind = (global::FastVariants.Proto.VisibilityTargetKind) input.ReadEnum();
+            break;
+          }
+          case 50: {
+            targetIds_.AddEntriesFrom(ref input, _repeated_targetIds_codec);
             break;
           }
         }

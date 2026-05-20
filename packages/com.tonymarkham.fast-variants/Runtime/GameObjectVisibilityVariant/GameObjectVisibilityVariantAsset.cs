@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FastVariants.Abstract;
 using Google.Protobuf;
 using FastVariants.Core.Utilities;
@@ -12,7 +13,8 @@ namespace FastVariants.GameObjectVisibilityVariant
     [CreateAssetMenu(fileName = MenuManager.GAMEOBJECT_VISIBILITY_VARIANT_ASSET_FILE, menuName = MenuManager.GAMEOBJECT_VISIBILITY_VARIANT_ASSET_MENU, order = MenuManager.GAMEOBJECT_VISIBILITY_VARIANT_ASSET_ORDER)]
     public class GameObjectVisibilityVariantAsset : FeatureAsset
     {
-        [SerializeField] GameObject m_ItemGameObject;
+        [SerializeField, HideInInspector] GameObject m_ItemGameObject;
+        [SerializeField] List<GameObject> m_ItemGameObjects = new();
         [SerializeField] GameObjectVisibilityVariant m_GameObjectVisibilityVariant;
         [SerializeField] GameObjectVisibilityVariantSetAsset m_GameObjectVisibilityVariantSet;
 
@@ -38,21 +40,21 @@ namespace FastVariants.GameObjectVisibilityVariant
 
         protected override void EnsureFeature()
         {
+            EnsureItemGameObjects();
+
             if (m_GameObjectVisibilityVariant is null
                 || m_GameObjectVisibilityVariant.id.IsEmptyId())
             {
-                m_GameObjectVisibilityVariant = new GameObjectVisibilityVariant(m_ItemName, m_ItemCode, m_ItemGameObject);
+                m_GameObjectVisibilityVariant = new GameObjectVisibilityVariant(m_ItemName, m_ItemCode, m_ItemGameObjects);
             }
         }
 
         protected override void SyncFeature()
         {
+            EnsureItemGameObjects();
             SyncFeatureIdentity(m_GameObjectVisibilityVariant);
 
-            if (m_GameObjectVisibilityVariant.value != m_ItemGameObject)
-            {
-                m_GameObjectVisibilityVariant.Set(m_ItemGameObject);
-            }
+            m_GameObjectVisibilityVariant.Set(m_ItemGameObjects);
 
             var featureSetId = m_GameObjectVisibilityVariantSet?.currentVariantSet?.id ?? GuidUtilities.EmptyId;
             m_GameObjectVisibilityVariant.SetFeatureSetId(featureSetId);
@@ -70,14 +72,41 @@ namespace FastVariants.GameObjectVisibilityVariant
 
         VisibilityVariantProto BuildProto()
         {
-            return new VisibilityVariantProto
+            var proto = new VisibilityVariantProto
             {
                 Id = m_GameObjectVisibilityVariant?.id ?? string.Empty,
                 Name = m_ItemName ?? string.Empty,
                 Code = m_ItemCode ?? string.Empty,
-                TargetId = GetEntityId(m_ItemGameObject),
                 TargetKind = VisibilityTargetKindProto.Entity
             };
+
+            if (m_ItemGameObjects == null)
+                return proto;
+
+            foreach (var gameObject in m_ItemGameObjects)
+            {
+                var entityId = GetEntityId(gameObject);
+                if (string.IsNullOrEmpty(entityId))
+                    continue;
+
+                proto.TargetIds.Add(entityId);
+            }
+
+            if (proto.TargetIds.Count > 0)
+                proto.TargetId = proto.TargetIds[0];
+
+            return proto;
+        }
+
+        void EnsureItemGameObjects()
+        {
+            m_ItemGameObjects ??= new List<GameObject>();
+
+            if (m_ItemGameObject != null && !m_ItemGameObjects.Contains(m_ItemGameObject))
+            {
+                m_ItemGameObjects.Add(m_ItemGameObject);
+                m_ItemGameObject = null;
+            }
         }
 
         static string GetEntityId(GameObject gameObject)

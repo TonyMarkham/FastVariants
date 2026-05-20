@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using FastVariants.GameObjectVisibilityVariant;
+using FastVariants.PrefabFingerprint;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -13,12 +15,15 @@ namespace FastVariants.Editor
         [SerializeField] VisualTreeAsset m_VisualTreeAsset;
         [SerializeField] StyleSheet m_Stylesheet;
 
-        const string ItemGameObjectPropertyName = "m_ItemGameObject";
+        const string ItemGameObjectsPropertyName = "m_ItemGameObjects";
         const string VariantSetPropertyName = "m_GameObjectVisibilityVariantSet";
         const string FeatureSetsPropertyName = "m_FeatureSets";
         const string ProductPropertyName = "m_Product";
         const string DropZoneName = "target-gameobject-drop-zone";
         const string DropZoneStatusName = "target-drop-zone-status";
+        const string DefaultDropZoneStatus = "Drop prefab assets, or scene prefab instance children from the owning Configuration Manager product prefab.";
+
+        bool m_ValidatingTargetGameObjects;
 
         public override VisualElement CreateInspectorGUI()
         {
@@ -51,7 +56,8 @@ namespace FastVariants.Editor
                 return;
 
             var statusLabel = root.Q<Label>(DropZoneStatusName);
-            SetDropZoneStatus(statusLabel, "Drop a prefab asset, or a scene prefab instance child from the owning Configuration Manager product prefab.");
+            SetDropZoneStatus(statusLabel, DefaultDropZoneStatus);
+            TrackTargetGameObjectChanges(root, statusLabel);
 
             dropZone.RegisterCallback<DragEnterEvent>(_ => dropZone.AddToClassList("fv-drop-zone--active"));
             dropZone.RegisterCallback<DragLeaveEvent>(_ => ClearDropZoneState(dropZone));
@@ -59,7 +65,7 @@ namespace FastVariants.Editor
 
             dropZone.RegisterCallback<DragUpdatedEvent>(evt =>
             {
-                var canRegister = TryGetDraggedProjectGameObject(out _, out var statusText);
+                var canRegister = TryGetDraggedProjectGameObjects(out _, out var statusText);
 
                 DragAndDrop.visualMode = canRegister ? DragAndDropVisualMode.Copy : DragAndDropVisualMode.Rejected;
                 dropZone.EnableInClassList("fv-drop-zone--active", canRegister);
@@ -70,7 +76,7 @@ namespace FastVariants.Editor
 
             dropZone.RegisterCallback<DragPerformEvent>(evt =>
             {
-                var canRegister = TryGetDraggedProjectGameObject(out var projectGameObject, out var statusText);
+                var canRegister = TryGetDraggedProjectGameObjects(out var projectGameObjects, out var statusText);
                 ClearDropZoneState(dropZone);
 
                 if (!canRegister)
@@ -82,25 +88,163 @@ namespace FastVariants.Editor
                 }
 
                 DragAndDrop.AcceptDrag();
-
-                Undo.RecordObject(serializedObject.targetObject, "Set Target GameObject");
-                serializedObject.Update();
-
-                var property = serializedObject.FindProperty(ItemGameObjectPropertyName);
-                property.objectReferenceValue = projectGameObject;
-                serializedObject.ApplyModifiedProperties();
-
-                EditorUtility.SetDirty(serializedObject.targetObject);
-                SetDropZoneStatus(statusLabel, $"Registered Project GameObject: {projectGameObject.name}");
+                var addedGameObjects = AddTargetGameObjects(projectGameObjects);
+                SetDropZoneStatus(statusLabel, addedGameObjects.Count switch
+                {
+                    0 => "Dropped targets are already registered.",
+                    1 => $"Registered Project GameObject: {addedGameObjects[0].name}",
+                    _ => $"Registered {addedGameObjects.Count} Project GameObjects."
+                });
                 evt.StopPropagation();
             });
         }
 
-        bool TryGetDraggedProjectGameObject(out GameObject projectGameObject, out string statusText)
+        void TrackTargetGameObjectChanges(VisualElement root, Label statusLabel)
         {
-            projectGameObject = null;
+            var itemGameObjectsProperty = serializedObject.FindProperty(ItemGameObjectsPropertyName);
+            if (itemGameObjectsProperty == null || !itemGameObjectsProperty.isArray)
+                return;
 
-            if (!TryGetOwningProductPrefab(out var productPrefab, out statusText))
+            root.TrackPropertyValue(itemGameObjectsProperty, property => ValidateTargetGameObjects(property, statusLabel));
+        }
+
+        void ValidateTargetGameObjects(SerializedProperty targetsProperty, Label statusLabel)
+        {
+            if (m_ValidatingTargetGameObjects)
+                return;
+
+            if (targetsProperty == null || !targetsProperty.isArray || targetsProperty.arraySize == 0)
+            {
+                SetDropZoneStatus(statusLabel, DefaultDropZoneStatus);
+                return;
+            }
+
+            if (!TryGetOwningConfigurationManagerProduct(out var configurationManager, out var productPrefab, out var statusText))
+            {
+                SetDropZoneStatus(statusLabel, statusText);
+                return;
+            }
+
+            m_ValidatingTargetGameObjects = true;
+
+            var removedInvalidTarget = false;
+            var removedProductRoot = false;
+            var removedDuplicateTarget = false;
+            var changedTarget = false;
+            var validTargets = new List<GameObject>();
+
+            Undo.RecordObject(serializedObject.targetObject, "Validate Target GameObjects");
+
+            for (var i = targetsProperty.arraySize - 1; i >= 0; i--)
+            {
+                var element = targetsProperty.GetArrayElementAtIndex(i);
+                var selectedGameObject = element.objectReferenceValue as GameObject;
+                if (selectedGameObject == null)
+                    continue;
+
+                if (!PrefabFingerprintRegistryEditorUtility.TryGetRegisteredGameObject(configurationManager.prefabFingerprint, productPrefab, selectedGameObject, out var fingerprintGameObject, out var isProductRoot)
+                    || isProductRoot)
+                {
+                    if (isProductRoot)
+                        removedProductRoot = true;
+                    else
+                        removedInvalidTarget = true;
+
+                    RemoveArrayElementAtIndex(targetsProperty, i);
+                    changedTarget = true;
+                    continue;
+                }
+
+                if (validTargets.Contains(fingerprintGameObject))
+                {
+                    removedDuplicateTarget = true;
+                    RemoveArrayElementAtIndex(targetsProperty, i);
+                    changedTarget = true;
+                    continue;
+                }
+
+                validTargets.Add(fingerprintGameObject);
+                if (fingerprintGameObject != selectedGameObject)
+                {
+                    element.objectReferenceValue = fingerprintGameObject;
+                    changedTarget = true;
+                }
+            }
+
+            if (changedTarget)
+            {
+                serializedObject.ApplyModifiedProperties();
+                EditorUtility.SetDirty(serializedObject.targetObject);
+            }
+
+            m_ValidatingTargetGameObjects = false;
+
+            if (removedProductRoot)
+                SetDropZoneStatus(statusLabel, $"Removed product root target. Select children of {productPrefab.name}, not the product prefab itself.");
+            else if (removedInvalidTarget)
+                SetDropZoneStatus(statusLabel, $"Removed targets that are not registered in the {productPrefab.name} product fingerprint.");
+            else if (removedDuplicateTarget)
+                SetDropZoneStatus(statusLabel, "Removed duplicate target GameObjects.");
+            else if (validTargets.Count == 1)
+                SetDropZoneStatus(statusLabel, $"Registered Project GameObject: {validTargets[0].name}");
+            else if (validTargets.Count > 1)
+                SetDropZoneStatus(statusLabel, $"Registered {validTargets.Count} Project GameObjects.");
+            else
+                SetDropZoneStatus(statusLabel, DefaultDropZoneStatus);
+        }
+
+        List<GameObject> AddTargetGameObjects(IReadOnlyList<GameObject> gameObjects)
+        {
+            var addedGameObjects = new List<GameObject>();
+
+            if (gameObjects == null || gameObjects.Count == 0)
+                return addedGameObjects;
+
+            Undo.RecordObject(serializedObject.targetObject, "Set Target GameObjects");
+            serializedObject.Update();
+
+            var targetsProperty = serializedObject.FindProperty(ItemGameObjectsPropertyName);
+            if (targetsProperty == null || !targetsProperty.isArray)
+                return addedGameObjects;
+
+            foreach (var gameObject in gameObjects)
+            {
+                if (gameObject == null || ContainsGameObject(targetsProperty, gameObject))
+                    continue;
+
+                var newIndex = targetsProperty.arraySize;
+                targetsProperty.InsertArrayElementAtIndex(newIndex);
+                targetsProperty.GetArrayElementAtIndex(newIndex).objectReferenceValue = gameObject;
+                addedGameObjects.Add(gameObject);
+            }
+
+            if (addedGameObjects.Count == 0)
+                return addedGameObjects;
+
+            serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(serializedObject.targetObject);
+            return addedGameObjects;
+        }
+
+        static bool ContainsGameObject(SerializedProperty targetsProperty, GameObject gameObject)
+        {
+            if (targetsProperty == null || !targetsProperty.isArray || gameObject == null)
+                return false;
+
+            for (var i = 0; i < targetsProperty.arraySize; i++)
+            {
+                if (targetsProperty.GetArrayElementAtIndex(i).objectReferenceValue == gameObject)
+                    return true;
+            }
+
+            return false;
+        }
+
+        bool TryGetDraggedProjectGameObjects(out List<GameObject> projectGameObjects, out string statusText)
+        {
+            projectGameObjects = new List<GameObject>();
+
+            if (!TryGetOwningConfigurationManagerProduct(out var configurationManager, out var productPrefab, out statusText))
                 return false;
 
             var droppedProductRoot = false;
@@ -111,28 +255,42 @@ namespace FastVariants.Editor
                 if (draggedGameObject == null)
                     continue;
 
-                var draggedProjectGameObject = ResolveProjectGameObject(draggedGameObject);
-                if (draggedProjectGameObject == null)
-                    continue;
+                if (!PrefabFingerprintRegistryEditorUtility.TryGetRegisteredGameObject(configurationManager.prefabFingerprint, productPrefab, draggedGameObject, out var fingerprintGameObject, out var isProductRoot))
+                {
+                    if (isProductRoot)
+                        droppedProductRoot = true;
 
-                if (draggedProjectGameObject == productPrefab)
+                    continue;
+                }
+
+                if (isProductRoot)
                 {
                     droppedProductRoot = true;
                     continue;
                 }
 
-                if (!IsInsideProductPrefab(draggedGameObject, draggedProjectGameObject, productPrefab))
-                    continue;
+                if (!projectGameObjects.Contains(fingerprintGameObject))
+                    projectGameObjects.Add(fingerprintGameObject);
+            }
 
-                projectGameObject = draggedProjectGameObject;
-                statusText = $"Ready to register {projectGameObject.name} from product prefab {productPrefab.name}.";
+            if (projectGameObjects.Count > 0)
+            {
+                statusText = projectGameObjects.Count == 1
+                    ? $"Ready to register {projectGameObjects[0].name} from product prefab {productPrefab.name}."
+                    : $"Ready to register {projectGameObjects.Count} targets from product prefab {productPrefab.name}.";
                 return true;
             }
 
             statusText = droppedProductRoot
-                ? $"Drop a child of {productPrefab.name}, not the product prefab itself."
-                : $"Drop a prefab object from inside the {productPrefab.name} product prefab.";
+                ? $"Drop children of {productPrefab.name}, not the product prefab itself."
+                : $"Drop prefab objects registered in the {productPrefab.name} product fingerprint.";
             return false;
+        }
+
+        static void RemoveArrayElementAtIndex(SerializedProperty arrayProperty, int index)
+        {
+            arrayProperty.GetArrayElementAtIndex(index).objectReferenceValue = null;
+            arrayProperty.DeleteArrayElementAtIndex(index);
         }
 
         static GameObject ResolveProjectGameObject(Object objectReference)
@@ -148,11 +306,12 @@ namespace FastVariants.Editor
             return PrefabUtility.GetCorrespondingObjectFromSource(gameObject);
         }
 
-        bool TryGetOwningProductPrefab(out GameObject productPrefab, out string statusText)
+        bool TryGetOwningConfigurationManagerProduct(out ConfigurationManagerAsset configurationManager, out GameObject productPrefab, out string statusText)
         {
+            configurationManager = null;
             productPrefab = null;
 
-            var configurationManager = GetOwningConfigurationManager();
+            configurationManager = GetOwningConfigurationManager();
             if (configurationManager == null)
             {
                 statusText = "This variant must belong to a Configuration Manager before targets can be dropped.";
@@ -166,6 +325,12 @@ namespace FastVariants.Editor
             if (productPrefab == null)
             {
                 statusText = "Assign a Product prefab on the owning Configuration Manager before dropping targets.";
+                return false;
+            }
+
+            if (configurationManager.prefabFingerprint.count == 0)
+            {
+                statusText = $"The Configuration Manager product fingerprint is empty. Reassign {productPrefab.name} on the Configuration Manager to rebuild it.";
                 return false;
             }
 
@@ -207,40 +372,6 @@ namespace FastVariants.Editor
             for (var i = 0; i < featureSetsProperty.arraySize; i++)
             {
                 if (featureSetsProperty.GetArrayElementAtIndex(i).objectReferenceValue == variantSet)
-                    return true;
-            }
-
-            return false;
-        }
-
-        static bool IsInsideProductPrefab(GameObject draggedGameObject, GameObject projectGameObject, GameObject productPrefab)
-        {
-            if (draggedGameObject == null || projectGameObject == null || productPrefab == null)
-                return false;
-
-            if (EditorUtility.IsPersistent(draggedGameObject))
-                return IsTransformUnder(projectGameObject.transform, productPrefab.transform);
-
-            return IsSceneObjectInsideProductPrefabInstance(draggedGameObject, productPrefab)
-                   || IsTransformUnder(projectGameObject.transform, productPrefab.transform);
-        }
-
-        static bool IsSceneObjectInsideProductPrefabInstance(GameObject gameObject, GameObject productPrefab)
-        {
-            for (var current = gameObject.transform; current != null; current = current.parent)
-            {
-                if (PrefabUtility.GetCorrespondingObjectFromSource(current.gameObject) == productPrefab)
-                    return true;
-            }
-
-            return false;
-        }
-
-        static bool IsTransformUnder(Transform child, Transform parent)
-        {
-            for (var current = child; current != null; current = current.parent)
-            {
-                if (current == parent)
                     return true;
             }
 

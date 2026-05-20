@@ -62,3 +62,99 @@
     height: 24px;
     -unity-font-style: bold;
 }
+
+.fv-drop-zone {
+    margin-top: 6px;
+    margin-bottom: 8px;
+    padding-top: 14px;
+    padding-right: 12px;
+    padding-bottom: 14px;
+    padding-left: 12px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-color: rgba(80, 160, 255, 0.35);
+    border-right-color: rgba(80, 160, 255, 0.35);
+    border-bottom-color: rgba(80, 160, 255, 0.35);
+    border-left-color: rgba(80, 160, 255, 0.35);
+    background-color: rgba(80, 160, 255, 0.07);
+}
+
+.fv-drop-zone--active {
+    border-top-color: rgb(80, 190, 255);
+    border-right-color: rgb(80, 190, 255);
+    border-bottom-color: rgb(80, 190, 255);
+    border-left-color: rgb(80, 190, 255);
+    background-color: rgba(80, 160, 255, 0.16);
+}
+
+.fv-drop-zone--rejected {
+    border-top-color: rgb(220, 90, 80);
+    border-right-color: rgb(220, 90, 80);
+    border-bottom-color: rgb(220, 90, 80);
+    border-left-color: rgb(220, 90, 80);
+    background-color: rgba(220, 90, 80, 0.12);
+}
+
+.fv-drop-zone-title {
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.fv-drop-zone-status {
+    margin-top: 3px;
+    color: rgb(166, 176, 190);
+    font-size: 11px;
+    white-space: normal;
+    -unity-text-align: middle-center;
+}
+
+.fv-foldout {
+    padding-top: 4px;
+}
+
+.fv-generated-field {
+    opacity: 0.85;
+}
+
+.fv-fingerprint-dictionary {
+    margin-top: 4px;
+}
+
+.fv-fingerprint-header,
+.fv-fingerprint-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.fv-fingerprint-header {
+    margin-bottom: 2px;
+}
+
+.fv-fingerprint-row {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.fv-fingerprint-key,
+.fv-fingerprint-object {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.fv-fingerprint-key {
+    margin-right: 8px;
+}
+
+.fv-fingerprint-header-label {
+    -unity-font-style: bold;
+    font-size: 11px;
+    color: rgb(166, 176, 190);
+}
+
+.fv-fingerprint-empty {
+    color: rgb(166, 176, 190);
+    white-space: normal;
+    font-size: 11px;
+}

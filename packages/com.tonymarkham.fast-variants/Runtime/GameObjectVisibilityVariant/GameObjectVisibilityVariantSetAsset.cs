@@ -18,6 +18,7 @@ namespace FastVariants.GameObjectVisibilityVariant
     {
         [SerializeField] GameObjectVisibilityVariantSet m_VariantSet;
         [SerializeField] List<GameObjectVisibilityVariantAsset> m_Variants;
+        [SerializeField] GameObjectVisibilityVariantAsset m_DefaultVariant;
 
         public GameObjectVisibilityVariantSet variantSet
         {
@@ -57,6 +58,7 @@ namespace FastVariants.GameObjectVisibilityVariant
 
             m_Variants ??= new List<GameObjectVisibilityVariantAsset>();
             m_Variants.Add(variantAsset);
+            m_DefaultVariant ??= variantAsset;
 
             EditorUtility.SetDirty(variantAsset);
             EditorUtility.SetDirty(this);
@@ -91,6 +93,8 @@ namespace FastVariants.GameObjectVisibilityVariant
 
             m_VariantSet.ClearFeatures();
 
+            var defaultVariant = GetDefaultVariant();
+
             if (m_Variants is not null)
             {
                 foreach (var variantAsset in m_Variants)
@@ -98,9 +102,33 @@ namespace FastVariants.GameObjectVisibilityVariant
                     if (variantAsset is null || variantAsset.variant is null)
                         continue;
 
-                    m_VariantSet.TryAddFeature(variantAsset.variant);
+                    m_VariantSet.TryAddFeature(variantAsset.variant, variantAsset == defaultVariant);
                 }
             }
+        }
+
+        GameObjectVisibilityVariantAsset GetDefaultVariant()
+        {
+            if (m_Variants is null || m_Variants.Count == 0)
+            {
+                m_DefaultVariant = null;
+                return null;
+            }
+
+            if (m_DefaultVariant != null && m_Variants.Contains(m_DefaultVariant))
+                return m_DefaultVariant;
+
+            foreach (var variantAsset in m_Variants)
+            {
+                if (variantAsset == null)
+                    continue;
+
+                m_DefaultVariant = variantAsset;
+                return m_DefaultVariant;
+            }
+
+            m_DefaultVariant = null;
+            return null;
         }
 
         protected override IMessage BuildProtoMessage()

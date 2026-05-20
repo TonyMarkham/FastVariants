@@ -9,6 +9,10 @@
             <ui:Label text="Configuration" class="fv-section-title" />
             <uie:PropertyField binding-path="m_ItemName" label="Name" />
             <uie:PropertyField binding-path="m_Product" label="Product" />
+            <ui:VisualElement name="product-prefab-drop-zone" class="fv-drop-zone">
+                <ui:Label text="Drop Product Prefab Here" class="fv-drop-zone-title" />
+                <ui:Label name="product-drop-zone-status" text="Drop one Project prefab asset, or one prefab instance from the Hierarchy." class="fv-drop-zone-status" />
+            </ui:VisualElement>
             <ui:Label text="The product GameObject is the root object this configuration describes." class="fv-note" />
         </ui:VisualElement>
 
@@ -18,5 +22,10 @@
             <uie:PropertyField binding-path="m_FeatureSets" label="Feature Sets" />
             <ui:Label text="Feature sets are stored as sub-assets of this configuration manager asset." class="fv-note" />
         </ui:VisualElement>
+
+        <ui:Foldout text="Generated Data" value="false" class="fv-section fv-foldout">
+            <ui:Label text="Prefab Fingerprint" class="fv-section-title fv-generated-field" />
+            <ui:VisualElement name="prefab-fingerprint-dictionary" class="fv-fingerprint-dictionary fv-generated-field" />
+        </ui:Foldout>
     </ui:VisualElement>
 </ui:UXML>

@@ -12,14 +12,14 @@
         </ui:VisualElement>
 
         <ui:VisualElement class="fv-section">
-            <ui:Label text="Visibility Target" class="fv-section-title" />
-            <uie:PropertyField binding-path="m_ItemGameObject" label="Target GameObject" />
+            <ui:Label text="Visibility Targets" class="fv-section-title" />
+            <uie:PropertyField binding-path="m_ItemGameObjects" label="Target GameObjects" />
             <ui:VisualElement name="target-gameobject-drop-zone" class="fv-drop-zone">
-                <ui:Label text="Drop Target Here" class="fv-drop-zone-title" />
-                <ui:Label name="target-drop-zone-status" text="Drop a prefab asset, or a scene prefab instance child. The matching Project prefab GameObject will be assigned." class="fv-drop-zone-status" />
+                <ui:Label text="Drop Targets Here" class="fv-drop-zone-title" />
+                <ui:Label name="target-drop-zone-status" text="Drop prefab assets, or scene prefab instance children. Matching Project prefab GameObjects will be assigned." class="fv-drop-zone-status" />
             </ui:VisualElement>
             <uie:PropertyField binding-path="m_GameObjectVisibilityVariantSet" label="Variant Set" />
-            <ui:Label text="The target GameObject must expose a valid Entity Id for this variant to be valid." class="fv-note" />
+            <ui:Label text="Every target GameObject must be registered in the product fingerprint and expose a valid Entity Id for this variant to be valid." class="fv-note" />
         </ui:VisualElement>
 
         <ui:Foldout text="Generated Data" value="false" class="fv-section fv-foldout">
